@@ -1,5 +1,23 @@
+import logging
+import os
 from flask import Flask, request, jsonify
 from shtrihmfr.kkt import KKT, KktError, ConnectionError
+
+# Создание папки для логов
+log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
+os.makedirs(log_dir, exist_ok=True)
+
+# Определение файла для логов
+log_file = os.path.join(log_dir, 'error.log')
+
+# Настройка логгирования
+logging.basicConfig(
+    filename=log_file,
+    level=logging.ERROR,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
@@ -32,7 +50,7 @@ def sell_tickets(com_port):
         print("Чек успешно закрыт.")
         return jsonify({"success": True, "message": "Чек успешно закрыт."}), 200
     except (ConnectionError, KktError) as e:
-        print(f"Ошибка: {e}")
+        logger.error(f"Ошибка: {e}")
         # Подготовка структурированного JSON ответа об ошибке
         error_response = {
             "code": 500,
@@ -50,7 +68,7 @@ def daily_report_x(com_port):
         print("X отчет распечатан.")
         return jsonify({"success": True, "message": "X отчет распечатан."}), 200
     except (ConnectionError, KktError) as e:
-        print(f"Ошибка: {e}")
+        logger.error(f"Ошибка: {e}")
         error_response = {
             "code": 500,
             "detail": f"{str(e)}",
@@ -66,7 +84,7 @@ def daily_report_z(com_port):
         print("Z отчет распечатан.")
         return jsonify({"success": True, "message": "Z отчет распечатан."}), 200
     except (ConnectionError, KktError) as e:
-        print(f"Ошибка: {e}")
+        logger.error(f"Ошибка: {e}")
         error_response = {
             "code": 500,
             "detail": f"{str(e)}",
