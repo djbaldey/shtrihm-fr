@@ -12,11 +12,11 @@ config = configparser.ConfigParser()
 config.read('config/config.ini')
 
 # Получение параметров хоста и порта из конфигурации
-# host = config.get('server', 'host', fallback='0.0.0.0')
-# port = config.getint('server', 'port', fallback=5000)
+host = config.get('server', 'host', fallback='0.0.0.0')
+port = config.getint('server', 'port', fallback=5000)
 
-host = '0.0.0.0'
-port = 5000
+# host = '0.0.0.0'
+# port = 5000
 
 if __name__ == "__main__":
     logger.info(f"Запуск сервера на http://{host}:{port}")
